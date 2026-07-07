@@ -1,17 +1,19 @@
-#include "DecisionTree.hpp"
+#include "../include/DecisionTree.hpp"
+#include <unordered_map>
+
 namespace ml{
 
     DecisionTree::DecisionTree(int max_depth, double min_gain) 
         : max_deep(max_depth), gain_min(min_gain), root(nullptr) {}
 
 
-    double DecisionTree::calculate_gini(double Labels&y){
+    double DecisionTree::calculate_gini(const Labels&y){
     int total_labels = y.size();
         if(y.empty()) return 0.0;
         
         std::unordered_map<int, int> count_label;
         for(auto& l: y){
-            count_label[l]++;
+            count_label[l.id]++;
         }
 
         double gini = 1.0;
@@ -25,8 +27,7 @@ namespace ml{
     }
 
 
-
-    BestSplit DecisionTree::find_best_split(const Matrix& X, const Labels& y, const Limiares& L){
+    BestSplit DecisionTree::find_best_split(const Matrix& X, const Labels& y, const Labels& L){
         BestSplit best;
         double impurity_pai = calculate_gini(y);
 
@@ -37,11 +38,11 @@ namespace ml{
 
         for(int j = 0; j < dimen; j++){
             for(int i = 0; i < n; i++){
-                double limiar = X[i][j];
+                double limiar = X[i][j].id;
                 Labels y_esq, y_dir;
 
                 for(int k = 0; k < n; k++){
-                    if(X[k][j] <= limiar){
+                    if(X[k][j].id <= limiar){
                         y_esq.push_back(y[k]);
                     }else{
                         y_dir.push_back(y[k]);
@@ -59,7 +60,7 @@ namespace ml{
                 if(gain > best.gain){
                     best.gain = gain;
                     best.caract_idx = j;
-                    best.threshold = limiar;
+                    best.thr = limiar;
                 }
             }
         }
