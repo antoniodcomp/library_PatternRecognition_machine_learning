@@ -12,18 +12,3 @@ namespace ml{
     }
 
 }
-
-struct node{
-    Data key;
-    int heigth, size;
-    shared_pointer leff;
-    shared_pointer rigth;
-
-    node(Data key){
-        key = key;
-        left = rigth = nullptr;
-        heigth = size = 1
-    }
-}
-
-struct 
