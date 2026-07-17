@@ -1,14 +1,14 @@
 #pragma once
-#include "DataTypes.hpp"
+#include <vector>
 
-namespace ml{
+namespace ml {
 
-    using std::vector<std::vector<Data>> Matrix;
-    using std::vector<Data> Labels;
+    using FeatureType = double;
+    
+    // Rótulos de classificação (ex: 0, 1, 2)
+    using LabelType = int;
+    using Labels = std::vector<LabelType>;
 
-
-    struct Data{
-        int id;
-    }
+    using Matrix = std::vector<std::vector<FeatureType>>;
 
 }
