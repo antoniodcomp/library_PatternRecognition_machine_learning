@@ -24,12 +24,16 @@ namespace ml {
         DecisionTree(int max_depth = 10, double min_gain = 1e-7);
         void fit(const Matrix& X, const Labels& y) override;
         Labels predict(const Matrix& X) const override;
+        bool save(const std::string& filename);
+        bool load(const std::string& filename);
 
     private:
         int max_depth;
         double min_gain;
         std::shared_ptr<TreeNode> root;
 
+        void saveNode(const std::shared_ptr<TreeNode>& node, std::ofstream& out);
+        std::shared_ptr<TreeNode> loadNode(std::ifstream& in);
         double calculate_gini(const Labels& y);
         int calculate_majority_vote(const Labels& y);
         BestSplit find_best_split(const Matrix& X, const Labels& y);

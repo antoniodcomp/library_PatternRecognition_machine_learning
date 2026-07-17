@@ -1,10 +1,98 @@
 #include "DecisionTree.hpp"
 #include <unordered_map>
+#include <fstream>
+#include <iostream>
+#include <string>
 
 namespace ml {
 
     DecisionTree::DecisionTree(int max_depth, double min_gain) 
         : max_depth(max_depth), min_gain(min_gain), root(nullptr) {}
+
+
+    void saveNode(const std::shared_ptr<TreeNode>& node, std::ofstream& out){
+        if(node == nullptr){
+            out << "# ";
+            return;
+        }
+
+        if(node->is_leaf){
+            out << "L " << node->predicted_class << " ";
+        }
+        else{
+            out << "I " << node->feature_idx << " " << node->threshold << " ";
+            saveNode(node->left, out);
+            saveNode(node->right, out);
+        }
+    }
+
+    bool save(const std::string& filename){
+        std::ofstream out(filename);
+
+        if(!out.is_open()){
+            std::cerr << "Erro: Nao foi possivel criar o arquivo de modelo." << std::endl;
+            return false;
+        }
+
+        saveNode(root, out);
+
+        out.close();
+        return true;
+    }
+
+    std::shared_ptr<TreeNode> loadNode(std::ifstream& in){
+        std::string text;
+        if(!(in >> text) || text == "#"){
+            return nullptr;
+        }
+
+        std::shared_ptr<TreeNode> node = std::make_shared<TreeNode>();;
+
+        if(text == "L"){
+            int label;
+            in >> label;
+
+            node->is_leaf = true;
+            node->predicted_class = label;
+
+        }else if(text == "I"){
+            int feature_index;
+            double thr;
+
+            in >> feat_idx >> thr;
+            
+            node->is_leaf = false;
+            node->feature_idx = feat_idx;
+            node->threshold = thr;
+
+            node->left = loadNode(in);
+            node->right = loadNode(in);
+
+        }
+
+        return node;
+    }
+
+    bool load(const std::string& filename){
+        std::ifstream in(filename);
+
+        if(!in.is_open()){
+            std::cerr << "Erro: Nao foi possivel carregar o arquivo de modelo." << std::endl;
+            return false;
+        }
+
+        root = nullptr;
+        root = loadNode(in);
+
+        if (root == nullptr) {
+            std::cerr << "Erro: O arquivo de modelo existe, mas esta vazio ou corrompido." << std::endl;
+            in.close();
+            return false;
+        }
+
+        in.close();
+        return true;
+    }
 
 
     double DecisionTree::calculate_gini(const Labels& y) {

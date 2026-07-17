@@ -33,11 +33,23 @@ int main() {
     gravador.stop();
     std::cout << "[ GRAVACAO CONCLUIDA ]\n" << std::endl;
 
+    const sf::SoundBuffer& buffer = gravador.getBuffer();
+    const sf::Int16* amostras = buffer.getSamples();
+
+    size_t contagem_gravada = buffer.getSampleCount();
 
 
+    vector<double> features;
+    const size_t NUM_AMOSTRAS = 78246;
 
-
-
+    for(size_t i = 0; i < num_amostras; ++i){
+        if(i < contagem_gravada){
+            features.push_back(amostras[i] / 32768.0);
+        }
+        else{
+            features.push_back(0.0);
+        }
+    }
 
     ml::Matrix X;
     ml::Labels y;
