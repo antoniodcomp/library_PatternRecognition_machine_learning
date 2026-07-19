@@ -1,6 +1,7 @@
 #pragma once
 #include "DataTypes.hpp"
 #include "TreeNode.hpp"
+#include "Metrics.hpp"
 #include <memory>
 #include <vector>
 
@@ -17,6 +18,10 @@ namespace ml {
         virtual ~Classifier() = default;
         virtual void fit(const Matrix& X, const Labels& y) = 0;
         virtual Labels predict(const Matrix& X) const = 0;
+
+        Metrics evaluate(const Labels& y_true, const Labels& y_pred) const {
+            return Metrics(y_true, y_pred);
+        }
     };
 
     class DecisionTree : public Classifier {

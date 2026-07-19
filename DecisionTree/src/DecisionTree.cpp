@@ -10,7 +10,7 @@ namespace ml {
         : max_depth(max_depth), min_gain(min_gain), root(nullptr) {}
 
 
-    void saveNode(const std::shared_ptr<TreeNode>& node, std::ofstream& out){
+    void DecisionTree::saveNode(const std::shared_ptr<TreeNode>& node, std::ofstream& out){
         if(node == nullptr){
             out << "# ";
             return;
@@ -26,7 +26,7 @@ namespace ml {
         }
     }
 
-    bool save(const std::string& filename){
+    bool DecisionTree::save(const std::string& filename){
         std::ofstream out(filename);
 
         if(!out.is_open()){
@@ -34,36 +34,34 @@ namespace ml {
             return false;
         }
 
-        saveNode(root, out);
+        saveNode(this->root, out);
 
         out.close();
         return true;
     }
 
-    std::shared_ptr<TreeNode> loadNode(std::ifstream& in){
+    std::shared_ptr<TreeNode> DecisionTree::loadNode(std::ifstream& in){
         std::string text;
         if(!(in >> text) || text == "#"){
             return nullptr;
         }
 
-        std::shared_ptr<TreeNode> node = std::make_shared<TreeNode>();;
+        std::shared_ptr<TreeNode> node;
 
         if(text == "L"){
             int label;
             in >> label;
 
-            node->is_leaf = true;
-            node->predicted_class = label;
+            node = std::make_shared<TreeNode>(label);
+
 
         }else if(text == "I"){
             int feature_index;
             double thr;
 
-            in >> feat_idx >> thr;
-            
-            node->is_leaf = false;
-            node->feature_idx = feat_idx;
-            node->threshold = thr;
+            in >> feature_index >> thr;
+
+            node = std::make_shared<TreeNode>(feature_index, thr);
 
             node->left = loadNode(in);
             node->right = loadNode(in);
@@ -73,7 +71,7 @@ namespace ml {
         return node;
     }
 
-    bool load(const std::string& filename){
+    bool DecisionTree::load(const std::string& filename){
         std::ifstream in(filename);
 
         if(!in.is_open()){
@@ -81,10 +79,10 @@ namespace ml {
             return false;
         }
 
-        root = nullptr;
-        root = loadNode(in);
+        this->root = nullptr;
+        this->root = loadNode(in);
 
-        if (root == nullptr) {
+        if (this->root == nullptr) {
             std::cerr << "Erro: O arquivo de modelo existe, mas esta vazio ou corrompido." << std::endl;
             in.close();
             return false;
