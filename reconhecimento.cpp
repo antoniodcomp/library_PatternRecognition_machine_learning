@@ -69,7 +69,7 @@ int main(){
     wvlt_features_ao_vivo.resize(llen);
 
     // APLICA DTW
-    std::vector<double> preprocessed_audio_ao_vivo = aligned_audios = audio_aligner(wvlt_features_ao_vivo, audios_da_base[45]);
+    std::vector<double> preprocessed_audio_ao_vivo = audio_aligner(wvlt_features_ao_vivo, audios_da_base[45]);
     
     cout << "Analisando voz..." << endl;
     ml::Labels predicao = tree.predict({preprocessed_audio_ao_vivo});
