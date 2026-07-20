@@ -82,14 +82,14 @@ int main() {
 
     // 3. Embaralhamento usando Semente Fixa (Para testes controlados)
     random_device rd;
-    mt19937 gerador(rd()); // Mude para rd() apenas quando terminar todos os ajustes
-    //mt19937 gerador(42)
+    //mt19937 gerador(rd()); // Mude para rd() apenas quando terminar todos os ajustes
+    mt19937 gerador(42);
 
     shuffle(position_not_my_voice.begin(), position_not_my_voice.end(), gerador);
     shuffle(position_my_voice.begin(), position_my_voice.end(), gerador);
 
     // 4. Divisão Treino e Teste (70%)
-    double train_ratio = 0.7;
+    double train_ratio = 0.9;
     size_t train_size_not_my_voice = position_not_my_voice.size() * train_ratio;
     size_t train_size_my_voice = position_my_voice.size() * train_ratio;
 
@@ -98,6 +98,7 @@ int main() {
         if (i < train_size_not_my_voice) {
             X_train.push_back(X[idx]);
             y_train.push_back(0);
+
         } else {
             X_test.push_back(X[idx]);
             y_test.push_back(0);
@@ -109,6 +110,7 @@ int main() {
         if (i < train_size_my_voice) {
             X_train.push_back(X[idx]);
             y_train.push_back(1);
+
         } else {
             X_test.push_back(X[idx]);
             y_test.push_back(1);
@@ -130,7 +132,7 @@ int main() {
 
     // 5. Treinamento da Árvore de Decisão
     // Como agora temos apenas 5 características ricas, podemos usar uma árvore de profundidade 5
-    ml::DecisionTree tree(5, 1e-5);
+    ml::DecisionTree tree(10, 1e-10);
     
     cout << "\nTreinando a arvore de decisao..." << endl;
     tree.fit(X_train, y_train);
