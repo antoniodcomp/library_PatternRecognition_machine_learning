@@ -40,7 +40,7 @@ std::vector<double> apply_wavelts(const std::vector<double>& signal, const unsig
     return curr_aprox;
 }
 
-void ajust_wavelets_length(std::vector<std::vector<double>>& caract_X) {
+size_t ajust_wavelets_length(std::vector<std::vector<double>>& caract_X) {
     size_t llen = 1e9;
 
     for(auto& s: caract_X) {
@@ -53,6 +53,7 @@ void ajust_wavelets_length(std::vector<std::vector<double>>& caract_X) {
         }
     }
 
+    return llen;
 }
 
 std::vector<double> load_txt(const std::string& filepath) {
