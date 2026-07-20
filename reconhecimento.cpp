@@ -9,6 +9,38 @@
 
 using namespace std;
 
+// auxiliar para carregar matriz do arquivo espaco_caracteristicas.txt
+std::vector<std::vector<double>> load_matrix(const std::string& filepath) {
+    std::vector<std::vector<double>> matrix;
+    std::ifstream file(filepath);
+    std::string line;
+
+    while (std::getline(file, line)) {
+        if (line.empty()) continue;
+        std::stringstream ss(line);
+        std::vector<double> row;
+        double val;
+        while (ss >> val) {
+            row.push_back(val);
+        }
+        if (!row.empty()) {
+            matrix.push_back(row);
+        }
+    }
+    return matrix;
+}
+
+size_t get_wavelet_llen(std::vector<std::vector<double>>& caract_X) {
+    size_t llen = 1e9;
+
+    for(auto& s: caract_X) {
+        if(s.size() < llen) llen = s.size();
+    }
+
+    return llen;
+}
+
+
 int main(){
     cout << "\n=========================================\n";
     cout << "      MODO DE RECONHECIMENTO AO VIVO     \n";
@@ -62,10 +94,11 @@ int main(){
     }
 
     // -- PROCESSAMENTO DO AUDIO GRAVADO AO VIVO -- //
-    
+    std::vector<std::vector<double>> audios_da_base = load_matrix("espaco_caracteristicas.txt");
+
     // APLICA WAVELET
     std::vector<double> wvlt_features_ao_vivo = apply_wavelet(features_ao_vivo, 4);
-    size_t llen = ajust_wavelets_length(audios_da_base);
+    size_t llen = get_wavelet_llen(audios_da_base);
     wvlt_features_ao_vivo.resize(llen);
 
     // APLICA DTW
