@@ -1,0 +1,18 @@
+CXX = x86_64-w64-mingw32-g++
+CXXFLAGS = -std=c++17 -Wall -I./DecisionTree/include -I./SFML-windows/include
+SFML_FLAGS = -L./SFML-windows/lib -lsfml-audio -lsfml-system -static-libgcc -static-libstdc++
+
+SRCS = reconhecimento.cpp DecisionTree/src/DecisionTree.cpp DecisionTree/src/Metrics.cpp Preprocessing/dtw_apply.cpp Preprocessing/wavelet_apply.cpp
+OBJS = $(SRCS:.cpp=.obj)
+TARGET = reconhecimento.exe
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(SFML_FLAGS)
+
+%.obj: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJS) $(TARGET)

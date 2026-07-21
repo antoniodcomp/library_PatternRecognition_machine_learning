@@ -1,10 +1,10 @@
 CXX = g++
-CXXFLAGS = -std=c++14 -Wall -I./DecisionTree/include
+CXXFLAGS = -std=c++17 -Wall -I./DecisionTree/include
 SFML_FLAGS = -lsfml-audio -lsfml-system
 
-SRCS = main.cpp DecisionTree/src/DecisionTree.cpp DecisionTree/src/Metrics.cpp
+SRCS = reconhecimento.cpp DecisionTree/src/DecisionTree.cpp DecisionTree/src/Metrics.cpp Preprocessing/dtw_apply.cpp Preprocessing/wavelet_apply.cpp
 OBJS = $(SRCS:.cpp=.o)
-TARGET = main
+TARGET = reconhecimento
 
 all: $(TARGET)
 
