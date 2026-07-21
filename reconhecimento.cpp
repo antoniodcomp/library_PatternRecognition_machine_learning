@@ -38,15 +38,18 @@ int main(){
     gravador.stop();
     cout << "[ GRAVACAO CONCLUIDA ]\n" << endl;
 
-    const sf::SoundBuffer& buffer = gravador.getBuffer();
-
-    if (buffer.saveToFile("audio_ao_vivo.wav")) {
-        cout << "[ DEBUG ] Audio capturado salvo com sucesso em 'audio_ao_vivo.wav'." << endl;
-    } else {
-        cerr << "[ AVISO ] Nao foi possivel salvar o arquivo 'audio_ao_vivo.wav'." << endl;
-    }
 
     
+    const sf::SoundBuffer& buffer = gravador.getBuffer();
+
+
+    // cout << "[DEBUG] Tentando salvar arquivo de áudio..." << endl;
+    // if (buffer.saveToFile("audio_ao_vivo.wav")) {
+    //     cout << "[ DEBUG ] Audio capturado salvo com sucesso em 'audio_ao_vivo.wav'." << endl;
+    // } else {
+    //     cerr << "[ AVISO ] Nao foi possivel salvar o arquivo 'audio_ao_vivo.wav'." << endl;
+    // }
+
     const sf::Int16* amostras = buffer.getSamples();
     size_t contagem_gravada = buffer.getSampleCount();
 
@@ -61,12 +64,12 @@ int main(){
         }
     }
 
+    
     features_ao_vivo = apply_wavelts(features_ao_vivo, 5);
 
-    std::cout << features_ao_vivo.size() << std::endl;
+    //std::cout << "[DEBUG] Tamanho das features geradas: " << features_ao_vivo.size() << std::endl;
 
-    
-    cout << "Analisando voz..." << endl;
+    //cout << "[DEBUG] Analisando voz na Arvore de Decisao..." << endl;
     ml::Labels predicao = tree.predict({features_ao_vivo});
     
     cout << "\nResultado Final:\n";
@@ -75,6 +78,10 @@ int main(){
     } else {
         cout << "-> ACESSO NEGADO! Voz desconhecida.\n";
     }
+
+    cout << "\nPressione [ENTER] para sair..." << endl;
+    cin.ignore(10000, '\n');
+    cin.get();
 
     return 0;
 }
